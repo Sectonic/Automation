@@ -4,7 +4,6 @@ import requests
 import time
 from typing import Any, Dict, Optional
 
-
 class NotionService:
     """Service for interacting with Notion API."""
     
