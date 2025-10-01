@@ -14,37 +14,53 @@ def summarize_emails(emails):
 
     prompt = """
 You are an assistant that organizes emails into clear, useful digests by clustering related emails.
+The digest should highlight only the items that truly matter — things the user must act on, know about, or would be glad to see even if they already checked their inbox.
 
-GOAL
-- Produce only a small number of high-signal groups.
-- Exclude spam/promotions/irrelevant clutter.
+⸻
 
-LABELS (pick exactly one per group)
-- Personal → Friends/family, personal services, purchases, non-school matters.
-- School → Assignments, class reminders, professors, academic info.
-- Internships → Recruiters, applications, interviews, career opportunities.
-- Administrative → Any logistics/official matters (bills, banking, IT, subscriptions, housing, government, university).
-- Projects → Side projects, GitHub, hackathons, collaborations outside coursework.
-- Social → Clubs, organizations, events, community activities.
+Goal
+	•	Produce only a small number of high-signal groups.
+	•	Exclude: spam, promotions, newsletters, optional events, or low-value announcements (e.g. “new product livestream,” “local attractions,” “marketing campaigns”).
+	•	Surface only items that:
+	•	Require action (deadlines, reviews, sign-ups, responses).
+	•	Affect the schedule (meetings, trips, interviews, recruiting sessions).
+	•	Are genuinely important to know (results, confirmations of something critical, accepted applications, urgent updates).
 
-INSTRUCTIONS
-1) Read the emails (sender, subject, snippet, source, link).
-2) Form coherent groups by topic.
-3) In each group's Summary (brief), synthesize meaning and actions; do not restate snippets.
-4) When referencing a concrete action or resource from a specific email (e.g., “coding assessment link” or “interview details”),
-   create a Markdown link using the provided email's link: [anchor text]({{that email's link}}).
-5) Keep the output compact and scannable.
+⸻
 
-OUTPUT FORMAT (valid JSON only, no extra text):
-```json
+Labels
+
+Pick exactly one per group:
+	•	Personal → Friends/family, personal services, purchases, non-school matters.
+	•	School → Assignments, class reminders, professors, academic info.
+	•	Internships → Recruiters, applications, interviews, career opportunities.
+	•	Administrative → Logistics/official matters (bills, banking, IT, subscriptions, housing, government, university).
+	•	Projects → Side projects, GitHub, hackathons, collaborations outside coursework.
+	•	Social → Clubs, organizations, events, community activities.
+
+⸻
+
+Instructions
+	1.	Read the emails (sender, subject, snippet, source, link).
+	2.	Form coherent groups by topic (cluster related items together).
+    3. In each group’s Summary: 
+    - Write in plain text only.
+    - Use Markdown links only in the form [anchor](link).
+    - Every time you mention a specific email, always include its link.
+    - For groups summarizing multiple emails, links are optional unless you call out a particular one.
+    - Everything else must stay plain text (no extra Markdown formatting).
+    - Prefer one paragraph per group, short and scannable. Split only if absolutely necessary.
+    - Do not include low-value items (ads, announcements, optional events, generic “come check this out” emails).
+	4.	Keep the digest focused: only what matters, nothing that wastes attention.
+	5.	Output must follow this JSON format:
+
 [
   {
     "title": "<Concise Group Title>",
     "label": "<one of: Personal | School | Internships | Administrative | Projects | Social>",
-    "summary": "<brief synthesis with some markdown links to specific emails if applicable>"
+    "summary": "<Plain text summary with Markdown links only for actual actions/resources>"
   }
 ]
-```
 """
 
     formatted = "\n\n".join(

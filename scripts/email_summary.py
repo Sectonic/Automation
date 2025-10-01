@@ -48,7 +48,7 @@ def save_last_run_time(is_morning: bool):
 def get_time_window(is_morning: bool):
     """Get the appropriate time window based on the last run time"""
     tracking_data = load_last_run_times()
-    now = dt.datetime.now(dt.UTC).isoformat()
+    now = dt.datetime.now(dt.UTC)
     
     last_run_key = "last_evening_run" if is_morning else "last_morning_run"
     last_run_time = tracking_data.get(last_run_key)
